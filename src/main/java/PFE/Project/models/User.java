@@ -1,5 +1,7 @@
 package PFE.Project.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,19 +16,24 @@ import java.util.List;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    Integer id;
     String email;
     String password;
     String full_name;
     String company;
     String phone_number;
     @JoinColumn(name = "role_id", nullable = false)
+    @JsonManagedReference
     @ManyToOne()
     Role role;
     @OneToMany(mappedBy = "user")
     List<ResetPasswordRequest> resetPasswordRequests;
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     List<Reclamation> reclamations;
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    List<Comment> comments;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

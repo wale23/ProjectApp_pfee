@@ -5,15 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
-private Integer id ;
-private String full_name;
-private String phone_number;
-private String email;
-private String company;
-private Long role_id;
+public class CommentDto {
+    LocalDate date;
+    Integer id;
+     UserDto user;
+     String comment;
+     ReclamationDto reclamation;
+
 }

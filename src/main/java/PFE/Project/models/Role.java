@@ -1,5 +1,6 @@
 package PFE.Project.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -14,8 +15,8 @@ public class Role {
 
     @Column(name = "name", nullable = false)
     private String name;
-
-   @OneToMany(mappedBy = "role")
+    @JsonIgnore
+    @OneToMany(mappedBy = "role")
     private List<User> user;
 
 

@@ -149,7 +149,7 @@ public class UserServices implements UserDetailsService {
                 } else {
                     Map<String, String> responseMap = new HashMap<>();
                     responseMap.put("error", "Mot de passe incorrecte");
-                    return ResponseEntity.status(404).body(responseMap);
+                    return ResponseEntity.status(300).body(responseMap);
 
                 }
 
@@ -157,11 +157,11 @@ public class UserServices implements UserDetailsService {
 
             Map<String, String> responseMap = new HashMap<>();
             responseMap.put("error", "Aucun utilisateur avec cet email");
-            return ResponseEntity.status(404).body(responseMap);
+            return ResponseEntity.status(401).body(responseMap);
         }
         Map<String, String> responseMap = new HashMap<>();
         responseMap.put("error", "Aucun utilisateur avec cet email");
-        return ResponseEntity.status(404).body(responseMap);
+        return ResponseEntity.status(401).body(responseMap);
     }
 
     public void sendEmail(String toEmail,
