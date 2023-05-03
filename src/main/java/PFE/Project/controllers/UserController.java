@@ -72,11 +72,11 @@ public class UserController {
 
 
     @PostMapping("/upload")
-    public ResponseEntity handleImageUpload(@RequestParam("images") List<MultipartFile> images) throws IOException {
-        System.out.println(images);
+    public List<String> handleImageUpload(@RequestParam("images") List<MultipartFile> images) throws IOException {
        return imageService.saveImages(images);
 
     }
+
     @GetMapping("/images/{filename}")
     public ResponseEntity<byte[]> serveImage(@PathVariable String filename) {
         Path imagePath = Paths.get(System.getProperty("user.dir") + "/src/main/resources/static/images/" + filename);

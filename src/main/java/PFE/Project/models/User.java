@@ -26,7 +26,7 @@ public class User implements UserDetails {
     @JsonManagedReference
     @ManyToOne()
     Role role;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     List<ResetPasswordRequest> resetPasswordRequests;
     @JsonIgnore
     @OneToMany(mappedBy = "user")

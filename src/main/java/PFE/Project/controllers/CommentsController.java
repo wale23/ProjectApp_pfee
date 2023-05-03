@@ -19,7 +19,7 @@ public class CommentsController {
     public ResponseEntity createReclamation(@RequestBody CommentRequest commentRequest){
         return commentsServices.createComment(commentRequest);
     }
-    @PostMapping("/comments/{reclamation_id}")
+    @GetMapping("/comments/{reclamation_id}")
     public List<CommentDto> getComments(@PathVariable Integer reclamation_id){
         return commentsServices.getComments(reclamation_id);
     }

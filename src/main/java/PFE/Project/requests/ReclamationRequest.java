@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 public class ReclamationRequest {
     String subject;
-    int priorirty;
+    int priority;
     String description;
     List<String> images;
     Integer user_id;

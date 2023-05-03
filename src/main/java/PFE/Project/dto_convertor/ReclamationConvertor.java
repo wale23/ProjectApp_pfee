@@ -16,9 +16,8 @@ public class ReclamationConvertor {
         reclamationDto.setDescription(reclamation.getDescription());
         reclamationDto.setImages(reclamation.getImages());
         reclamationDto.setStatus(reclamation.getStatus());
-        reclamationDto.setPriorirty(reclamation.getPriorirty());
+        reclamationDto.setPriority(reclamation.getPriority());
         reclamationDto.setSubject(reclamation.getSubject());
-        reclamationDto.setPriorirty(reclamation.getPriorirty());
         reclamationDto.setArchived(reclamation.isArchive());
 
         return reclamationDto;

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 @Data
 @Builder
@@ -16,9 +17,9 @@ public class ReclamationDto {
      String description;
      String subject;
      String status;
-     Integer priorirty;
+     Integer priority;
      UserDto user;
-     LocalDate date;
+     String date;
      boolean archived;
      List<String> images;
 

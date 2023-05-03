@@ -57,7 +57,7 @@ public class UserServices implements UserDetailsService {
         if (checkUser) {
 
             Map<String, String> responseMap = new HashMap<>();
-            responseMap.put("error", "L'e-mail est pris");
+            responseMap.put("message", "L'e-mail est pris");
             return ResponseEntity.status(404).body(responseMap);
         }
 
@@ -93,20 +93,20 @@ public class UserServices implements UserDetailsService {
                 resetPasswordRequest.setCode(code);
                 resetPasswordRequestRepository.save(resetPasswordRequest);
                 Map<String, String> responseMap = new HashMap<>();
-                responseMap.put("message", "done");
+                responseMap.put("message", "Un e-mail de vérification a été envoyé à votre adresse e-mail");
 
                 sendEmail(email, "Réinitialiser le mot de passe", "Bonjour , voici le code pour réinitialiser votre mot de passe " + code);
                 return ResponseEntity.status(200).body(responseMap);
             } else {
                 Map<String, String> responseMap = new HashMap<>();
-                responseMap.put("error", "facebook no");
-                return ResponseEntity.status(404).body(responseMap);
+                responseMap.put("message", "Vous ne pouvez pas réinitialiser le mot de passe créé avec un compte faceebok ou gmail");
+                return ResponseEntity.status(401).body(responseMap);
             }
         }
 
         Map<String, String> responseMap = new HashMap<>();
-        responseMap.put("error", "user not found");
-        return ResponseEntity.status(404).body(responseMap);
+        responseMap.put("message", "Utilisateur non trouvé");
+        return ResponseEntity.status(402).body(responseMap);
     }
 
 
@@ -118,7 +118,7 @@ public class UserServices implements UserDetailsService {
          return ResponseEntity.status(200).body(responseMap);
      }else{
          Map<String, String> responseMap = new HashMap<>();
-         responseMap.put("message", "not found");
+         responseMap.put("message", "Le code est invalide");
          return ResponseEntity.status(404).body(responseMap);
      }
     }
@@ -149,15 +149,13 @@ public class UserServices implements UserDetailsService {
                 } else {
                     Map<String, String> responseMap = new HashMap<>();
                     responseMap.put("error", "Mot de passe incorrecte");
-                    return ResponseEntity.status(300).body(responseMap);
+                    return ResponseEntity.status(400).body(responseMap);
 
                 }
 
             }
 
-            Map<String, String> responseMap = new HashMap<>();
-            responseMap.put("error", "Aucun utilisateur avec cet email");
-            return ResponseEntity.status(401).body(responseMap);
+            return ResponseEntity.status(200).body(UserConvertor.userToDto(user.get()));
         }
         Map<String, String> responseMap = new HashMap<>();
         responseMap.put("error", "Aucun utilisateur avec cet email");
@@ -168,7 +166,7 @@ public class UserServices implements UserDetailsService {
                           String subject,
                           String body) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("walatlili@gmail.com");
+        message.setFrom("fathi3ayari333@gmail.com");
         message.setTo(toEmail);
         message.setText(body);
         message.setSubject(subject);

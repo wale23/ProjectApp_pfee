@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface ReclamationRepository extends JpaRepository<Reclamation,Integer> {
     List<Reclamation> getReclamationByUserIdAndStatus(Integer userId,String status);
+    List<Reclamation> getReclamationByStatus(String status);
     List<Reclamation> getReclamationByUserId(Integer userId);
     List<Reclamation> getReclamationByUserIdAndAndArchive(Integer userId,boolean archive);
 }

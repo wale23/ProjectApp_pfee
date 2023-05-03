@@ -41,13 +41,22 @@ public class ReclamationsController {
         List<Integer> ids = request.getIds();
          return reclamationServices.deleteReclamations(ids);
     }
-    @PutMapping("/status/{id}/{status}")
+    @GetMapping("/status/{id}/{status}")
     public ResponseEntity changeStatus(@PathVariable int  id,@PathVariable  String status){
         return reclamationServices.changeStatus(id,status);
     }
-    @PutMapping("/archive/{id}/{archive}")
-    public ResponseEntity changeArchive(@PathVariable int  id,@PathVariable  boolean archive){
-        return reclamationServices.changeArchive(id,archive);
+    @PostMapping("/archive/{archive}")
+    public ResponseEntity changeArchive(@RequestBody StringListRequest request,@PathVariable boolean archive){
+        List<Integer> ids = request.getIds();
+        return reclamationServices.changeArchive(ids,archive);
+    }
+    @GetMapping("/bystatus/{status}")
+    public List<ReclamationDto> getAllByStatus(@PathVariable String status){
+        return reclamationServices.getAllReclamationsWithStatus(status);
+    }
+    @GetMapping("/all")
+    public List<ReclamationDto> getAll(){
+        return reclamationServices.getAll();
     }
 
 }

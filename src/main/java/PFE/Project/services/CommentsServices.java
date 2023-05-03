@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +33,7 @@ public class CommentsServices {
         Optional<User> user = userRepository.findById(commentRequest.getUser_id());
         comment.setComment(commentRequest.getComment());
         comment.setReclamation(reclamation.get());
-        comment.setDate(LocalDate.now());
+        comment.setDate(LocalDateTime.now().toString());
         comment.setComment(commentRequest.getComment());
         comment.setUser(user.get());
         commentsRepository.save(comment);

@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentDto {
-    LocalDate date;
+    String date;
     Integer id;
      UserDto user;
      String comment;

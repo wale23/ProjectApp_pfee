@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,15 +30,17 @@ public class ReclamationServices {
 
     public ResponseEntity createReclamation(ReclamationRequest reclamationRequest) {
         Optional<User> user = userRepository.findById(reclamationRequest.getUser_id());
-        System.out.println(user.get().getId());
+
         Reclamation reclamation = new Reclamation();
-        reclamation.setDate(LocalDate.now());
+        reclamation.setDate(LocalDateTime.now().toString());
+        System.out.println(LocalDateTime.now());
         reclamation.setDescription(reclamationRequest.getDescription());
-        reclamation.setPriorirty(reclamationRequest.getPriorirty());
+        reclamation.setPriority(reclamationRequest.getPriority());
         reclamation.setSubject(reclamationRequest.getSubject());
         reclamation.setUser(user.get());
-        reclamation.setStatus("none");
+        reclamation.setStatus("Aucune");
         reclamation.setArchive(false);
+        reclamation.setPriority(reclamationRequest.getPriority());
         reclamation.setImages(reclamationRequest.getImages());
         reclamationRepository.save(reclamation);
 
@@ -46,15 +49,26 @@ public class ReclamationServices {
     }
 
     public List<ReclamationDto> getMyReclamationsWithStatus(Integer user_id, String status) {
-        List<Reclamation> list ;
-        list = reclamationRepository.getReclamationByUserIdAndStatus(user_id,status);
+        List<Reclamation> list;
+        list = reclamationRepository.getReclamationByUserIdAndStatus(user_id, status);
+        for (Reclamation reclamation : list) {
+
+        }
 
         return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
     }
-    public List<ReclamationDto> getMyReclamations(Integer user_id) {
-        List<Reclamation> list ;
-        list = reclamationRepository.getReclamationByUserId(user_id);
+    public List<ReclamationDto> getAllReclamationsWithStatus(String status) {
+        List<Reclamation> list;
+        list = reclamationRepository.getReclamationByStatus(status);
 
+
+        return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
+    }
+
+    public List<ReclamationDto> getMyReclamations(Integer user_id) {
+
+        List<Reclamation> list = reclamationRepository.getReclamationByUserId(user_id);
+        list.removeIf(Reclamation::isArchive);
         return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
     }
 
@@ -77,16 +91,28 @@ public class ReclamationServices {
         return ResponseEntity.status(200).body("done");
     }
 
-    public ResponseEntity changeArchive(int id, boolean archive) {
-        Reclamation reclamation = reclamationRepository.findById(id).orElse(null);
-        reclamation.setArchive(archive);
-        reclamationRepository.save(reclamation);
+    public ResponseEntity changeArchive(List<Integer> reclamations, boolean archive) {
+        for (Integer index : reclamations) {
+            Reclamation reclamation = reclamationRepository.findById(index).orElse(null);
+
+            reclamation.setArchive(archive);
+            reclamationRepository.save(reclamation);
+
+
+        }
         return ResponseEntity.status(200).body("done");
+
 
     }
 
     public List<ReclamationDto> getArchived(int user_id) {
-      List<Reclamation>  list = reclamationRepository.getReclamationByUserIdAndAndArchive(user_id,true);
+        List<Reclamation> list = reclamationRepository.getReclamationByUserIdAndAndArchive(user_id, true);
+        return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
+
+    }
+
+    public List<ReclamationDto> getAll() {
+        List<Reclamation> list = reclamationRepository.findAll();
         return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
 
     }

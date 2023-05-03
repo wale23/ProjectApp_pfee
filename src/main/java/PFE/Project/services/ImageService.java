@@ -8,16 +8,18 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.core.io.Resource;
 @Service
 public class ImageService {
 
-    public ResponseEntity saveImages(List<MultipartFile> images)  {
-
+    public List<String> saveImages(List<MultipartFile> images)  {
+        List<String> paths = new ArrayList<>();
         try {
             for (MultipartFile image : images) {
                 String filename = image.getOriginalFilename();
+                paths.add(filename);
                 System.out.println(filename);
                 byte[] bytes = image.getBytes();
                 Path path = Paths.get(System.getProperty("user.dir") + "/src/main/resources/static/images/" + filename);
@@ -25,9 +27,9 @@ public class ImageService {
                 Files.write(path, bytes);
                }
 
-            return  ResponseEntity.status(200).body("done");
+            return  paths;
         }catch (Exception e){
-            return  ResponseEntity.status(200).body(e.toString());
+            return  paths;
         }
         }
 

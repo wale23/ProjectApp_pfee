@@ -8,6 +8,7 @@ import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -19,8 +20,8 @@ public class Reclamation {
     private Integer id;
     String status;
     String subject;
-    int priorirty;
-    LocalDate date;
+    int priority;
+    String date;
     boolean archive;
     String description;
     @Cascade(org.hibernate.annotations.CascadeType.DELETE)
