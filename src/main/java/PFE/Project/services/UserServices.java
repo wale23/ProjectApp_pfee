@@ -52,12 +52,18 @@ public class UserServices implements UserDetailsService {
     }
 
     public ResponseEntity registerService(RegistrationRequest request) {
-        boolean checkUser = this.userRepository.findByEmail(request.getEmail()).isPresent();
+        Optional<User> checkUser = this.userRepository.findByEmail(request.getEmail());
 
-        if (checkUser) {
+        if (checkUser.isPresent()) {
+
+            if (Objects.equals(checkUser.get().getType(), request.getType())) {
+
+                return ResponseEntity.status(200).body(UserConvertor.userToDto(checkUser.get()));
+            }
+
 
             Map<String, String> responseMap = new HashMap<>();
-            responseMap.put("message", "L'e-mail est pris");
+            responseMap.put("message", "L'e-mail est deja  pris avec un compte " + checkUser.get().getType());
             return ResponseEntity.status(404).body(responseMap);
         }
 
@@ -70,9 +76,9 @@ public class UserServices implements UserDetailsService {
             encodedPassword = request.getPassword();
         }
         user.setPassword(encodedPassword);
+        user.setType(request.getType());
         user.setFull_name(request.getFull_name());
         user.setPhone_number(request.getPhone_number());
-        user.setCompany(request.getCompany());
         user.setEmail(request.getEmail());
         user.setRole(role);
         userRepository.save(user);
@@ -80,6 +86,7 @@ public class UserServices implements UserDetailsService {
         return ResponseEntity.status(200).body(UserConvertor.userToDto(user));
 
     }
+
 
     public ResponseEntity resetPasswordService(String email) {
         Optional<User> user = userRepository.findByEmail(email);
@@ -99,7 +106,7 @@ public class UserServices implements UserDetailsService {
                 return ResponseEntity.status(200).body(responseMap);
             } else {
                 Map<String, String> responseMap = new HashMap<>();
-                responseMap.put("message", "Vous ne pouvez pas réinitialiser le mot de passe créé avec un compte faceebok ou gmail");
+                responseMap.put("message", "Vous ne pouvez pas réinitialiser le mot de passe créé avec " + user.get().getType());
                 return ResponseEntity.status(401).body(responseMap);
             }
         }
@@ -110,21 +117,21 @@ public class UserServices implements UserDetailsService {
     }
 
 
-    public  ResponseEntity checkOtp(Long code){
-        Optional<ResetPasswordRequest> resetPasswordRequest=resetPasswordRequestRepository.getResetPasswordRequestByCode(code);
-     if(resetPasswordRequest.isPresent()&& Objects.equals(resetPasswordRequest.get().getCode(), code))   {
-         Map<String, String> responseMap = new HashMap<>();
-         responseMap.put("message", "done");
-         return ResponseEntity.status(200).body(responseMap);
-     }else{
-         Map<String, String> responseMap = new HashMap<>();
-         responseMap.put("message", "Le code est invalide");
-         return ResponseEntity.status(404).body(responseMap);
-     }
+    public ResponseEntity checkOtp(Long code) {
+        Optional<ResetPasswordRequest> resetPasswordRequest = resetPasswordRequestRepository.getResetPasswordRequestByCode(code);
+        if (resetPasswordRequest.isPresent() && Objects.equals(resetPasswordRequest.get().getCode(), code)) {
+            Map<String, String> responseMap = new HashMap<>();
+            responseMap.put("message", "done");
+            return ResponseEntity.status(200).body(responseMap);
+        } else {
+            Map<String, String> responseMap = new HashMap<>();
+            responseMap.put("message", "Le code est invalide");
+            return ResponseEntity.status(404).body(responseMap);
+        }
     }
 
-    public  ResponseEntity changePassword(ChangePasswordRequest changePasswordRequest){
-        Optional<User> user=userRepository.findByEmail(changePasswordRequest.getEmail());
+    public ResponseEntity changePassword(ChangePasswordRequest changePasswordRequest) {
+        Optional<User> user = userRepository.findByEmail(changePasswordRequest.getEmail());
         String encodedPassword;
         encodedPassword = bCryptPasswordEncoder.encode(changePasswordRequest.getPassword());
 
@@ -142,23 +149,27 @@ public class UserServices implements UserDetailsService {
         Optional<User> user = userRepository.findByEmail(loginRequest.getEmail());
         if (user.isPresent()) {
 
-            if (user.get().getPassword() != null) {
+            if (user.get().getPassword() != null && Objects.equals(user.get().getType(), loginRequest.getType())) {
                 if (bCryptPasswordEncoder.matches(loginRequest.getPassword(), user.get().getPassword())) {
                     return ResponseEntity.status(200).body(UserConvertor.userToDto(user.get()));
 
                 } else {
+
                     Map<String, String> responseMap = new HashMap<>();
                     responseMap.put("error", "Mot de passe incorrecte");
                     return ResponseEntity.status(400).body(responseMap);
 
                 }
 
+            } else if (user.get().getPassword() == null && Objects.equals(user.get().getType(), loginRequest.getType())) {
+                return ResponseEntity.status(200).body(UserConvertor.userToDto(user.get()));
             }
-
-            return ResponseEntity.status(200).body(UserConvertor.userToDto(user.get()));
+            Map<String, String> responseMap = new HashMap<>();
+            responseMap.put("error", "Aucun utilisateur avec ces données");
+            return ResponseEntity.status(401).body(responseMap);
         }
         Map<String, String> responseMap = new HashMap<>();
-        responseMap.put("error", "Aucun utilisateur avec cet email");
+        responseMap.put("error", "Aucun utilisateur avec ces données");
         return ResponseEntity.status(401).body(responseMap);
     }
 

@@ -17,7 +17,8 @@ public class ReclamationDto {
      String description;
      String subject;
      String status;
-     Integer priority;
+     String priority;
+     String departement;
      UserDto user;
      String date;
      boolean archived;

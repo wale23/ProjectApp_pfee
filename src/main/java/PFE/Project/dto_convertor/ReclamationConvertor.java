@@ -19,6 +19,7 @@ public class ReclamationConvertor {
         reclamationDto.setPriority(reclamation.getPriority());
         reclamationDto.setSubject(reclamation.getSubject());
         reclamationDto.setArchived(reclamation.isArchive());
+        reclamationDto.setDepartement(reclamation.getDepartement());
 
         return reclamationDto;
     }

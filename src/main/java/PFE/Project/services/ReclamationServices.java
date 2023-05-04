@@ -35,12 +35,12 @@ public class ReclamationServices {
         reclamation.setDate(LocalDateTime.now().toString());
         System.out.println(LocalDateTime.now());
         reclamation.setDescription(reclamationRequest.getDescription());
-        reclamation.setPriority(reclamationRequest.getPriority());
         reclamation.setSubject(reclamationRequest.getSubject());
         reclamation.setUser(user.get());
         reclamation.setStatus("Aucune");
         reclamation.setArchive(false);
         reclamation.setPriority(reclamationRequest.getPriority());
+        reclamation.setDepartement(reclamationRequest.getDepartement());
         reclamation.setImages(reclamationRequest.getImages());
         reclamationRepository.save(reclamation);
 
@@ -51,9 +51,8 @@ public class ReclamationServices {
     public List<ReclamationDto> getMyReclamationsWithStatus(Integer user_id, String status) {
         List<Reclamation> list;
         list = reclamationRepository.getReclamationByUserIdAndStatus(user_id, status);
-        for (Reclamation reclamation : list) {
+        list.removeIf(Reclamation::isArchive);
 
-        }
 
         return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
     }
@@ -61,7 +60,7 @@ public class ReclamationServices {
         List<Reclamation> list;
         list = reclamationRepository.getReclamationByStatus(status);
 
-
+        list.removeIf(Reclamation::isArchive);
         return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
     }
 
@@ -93,6 +92,7 @@ public class ReclamationServices {
 
     public ResponseEntity changeArchive(List<Integer> reclamations, boolean archive) {
         for (Integer index : reclamations) {
+            System.out.println(index);
             Reclamation reclamation = reclamationRepository.findById(index).orElse(null);
 
             reclamation.setArchive(archive);

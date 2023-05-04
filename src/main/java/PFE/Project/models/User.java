@@ -20,7 +20,7 @@ public class User implements UserDetails {
     String email;
     String password;
     String full_name;
-    String company;
+    String type;
     String phone_number;
     @JoinColumn(name = "role_id", nullable = false)
     @JsonManagedReference

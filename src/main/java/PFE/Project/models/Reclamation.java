@@ -20,7 +20,8 @@ public class Reclamation {
     private Integer id;
     String status;
     String subject;
-    int priority;
+    String priority;
+    String departement;
     String date;
     boolean archive;
     String description;
