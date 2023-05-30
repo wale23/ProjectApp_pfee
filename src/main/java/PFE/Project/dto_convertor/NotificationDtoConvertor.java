@@ -6,7 +6,7 @@ import PFE.Project.models.Comment;
 import PFE.Project.models.Notifcation;
 
 public class NotificationDtoConvertor {
-    public static NotificationDto commentDto(Notifcation notifcation) {
+    public static NotificationDto notificationDto(Notifcation notifcation) {
         NotificationDto notificationDto= new NotificationDto();
         notificationDto.setNotification(notifcation.getNotification());
         notificationDto.setId(notifcation.getId());
