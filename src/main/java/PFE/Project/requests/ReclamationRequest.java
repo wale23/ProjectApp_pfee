@@ -15,5 +15,6 @@ public class ReclamationRequest {
     String departement;
     String description;
     List<String> images;
-    Integer user_id;
+    Integer sender;
+    Integer receiver;
 }

@@ -29,8 +29,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     List<ResetPasswordRequest> resetPasswordRequests;
     @JsonIgnore
-    @OneToMany(mappedBy = "user")
-    List<Reclamation> reclamations;
+    @OneToMany(mappedBy = "receiver")
+    List<Reclamation> receivedReclamations;
+    @OneToMany(mappedBy = "sender")
+    List<Reclamation> sentReclamations;
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     List<Comment> comments;

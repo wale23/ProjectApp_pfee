@@ -29,14 +29,16 @@ public class ReclamationServices {
     }
 
     public ResponseEntity createReclamation(ReclamationRequest reclamationRequest) {
-        Optional<User> user = userRepository.findById(reclamationRequest.getUser_id());
+        Optional<User> sender = userRepository.findById(reclamationRequest.getSender());
+        Optional<User> receiver = userRepository.findById(reclamationRequest.getReceiver());
 
         Reclamation reclamation = new Reclamation();
         reclamation.setDate(LocalDateTime.now().toString());
-        System.out.println(LocalDateTime.now());
+
         reclamation.setDescription(reclamationRequest.getDescription());
         reclamation.setSubject(reclamationRequest.getSubject());
-        reclamation.setUser(user.get());
+        reclamation.setReceiver(receiver.get());
+        reclamation.setSender(sender.get());
         reclamation.setStatus("Aucune");
         reclamation.setArchive(false);
         reclamation.setPriority(reclamationRequest.getPriority());
@@ -48,14 +50,16 @@ public class ReclamationServices {
         return ResponseEntity.status(200).body("done");
     }
 
-    public List<ReclamationDto> getMyReclamationsWithStatus(Integer user_id, String status) {
+    public List<ReclamationDto> getMyReclamationsWithStatus(Integer sender, String status) {
         List<Reclamation> list;
-        list = reclamationRepository.getReclamationByUserIdAndStatus(user_id, status);
+        list = reclamationRepository.getReclamationBySenderIdAndStatus(sender, status);
         list.removeIf(Reclamation::isArchive);
 
 
         return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
     }
+
+
     public List<ReclamationDto> getAllReclamationsWithStatus(String status) {
         List<Reclamation> list;
         list = reclamationRepository.getReclamationByStatus(status);
@@ -64,9 +68,9 @@ public class ReclamationServices {
         return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
     }
 
-    public List<ReclamationDto> getMyReclamations(Integer user_id) {
+    public List<ReclamationDto> getMyReclamations(Integer sender) {
 
-        List<Reclamation> list = reclamationRepository.getReclamationByUserId(user_id);
+        List<Reclamation> list = reclamationRepository.getReclamationBySenderId(sender);
         list.removeIf(Reclamation::isArchive);
         return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
     }
@@ -106,7 +110,7 @@ public class ReclamationServices {
     }
 
     public List<ReclamationDto> getArchived(int user_id) {
-        List<Reclamation> list = reclamationRepository.getReclamationByUserIdAndAndArchive(user_id, true);
+        List<Reclamation> list = reclamationRepository.getReclamationBySenderIdAndAndArchive(user_id, true);
         return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
 
     }
@@ -115,5 +119,15 @@ public class ReclamationServices {
         List<Reclamation> list = reclamationRepository.findAll();
         return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
 
+    }
+
+    // My received reclamations
+    public List<ReclamationDto> getMyRecievedReclamationsWithStatus(Integer receiver, String status) {
+        List<Reclamation> list;
+        list = reclamationRepository.getReclamationByReceiverIdAndStatus(receiver, status);
+        list.removeIf(Reclamation::isArchive);
+
+
+        return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
     }
 }

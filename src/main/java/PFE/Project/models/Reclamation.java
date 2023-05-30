@@ -31,9 +31,13 @@ public class Reclamation {
     @JoinColumn
     @JsonManagedReference
     @ManyToOne()
-    User user;
+    User sender;
+    @ManyToOne()
+    User receiver;
     @JsonIgnore
     @OneToMany(mappedBy = "reclamation")
     List<Comment> comments;
+    @OneToMany(mappedBy = "reclamation")
+    List<Notifcation> notifcations;
 
 }

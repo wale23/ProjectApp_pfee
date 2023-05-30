@@ -23,9 +23,9 @@ public class ReclamationsController {
     public ResponseEntity createReclamation(@RequestBody ReclamationRequest reclamationRequest){
         return reclamationServices.createReclamation(reclamationRequest);
     }
-    @GetMapping("/reclamations/{user_id}/{status}")
-    public List<ReclamationDto> getMyReclamationsWithStatus(@PathVariable int  user_id, @PathVariable String status){
-        return reclamationServices.getMyReclamationsWithStatus(user_id,status);
+    @GetMapping("/reclamations/{sender}/{status}")
+    public List<ReclamationDto> getMyReclamationsWithStatus(@PathVariable int  sender, @PathVariable String status){
+        return reclamationServices.getMyReclamationsWithStatus(sender,status);
     }
     @GetMapping("/reclamations/{user_id}")
     public List<ReclamationDto> getMyReclamations(@PathVariable int  user_id){
@@ -57,6 +57,19 @@ public class ReclamationsController {
     @GetMapping("/all")
     public List<ReclamationDto> getAll(){
         return reclamationServices.getAll();
+    }
+
+
+
+    // my recieved reclamations
+    @GetMapping("/reclamations/recu/{receiver}/{status}")
+    public List<ReclamationDto> getMyReceivedReclamationsWithStatus(@PathVariable int  receiver, @PathVariable String status){
+        return reclamationServices.getMyRecievedReclamationsWithStatus(receiver,status);
+    }
+
+    @GetMapping("/reclamations/recu/{user_id}")
+    public List<ReclamationDto> getMyReceivedReclamations(@PathVariable int  user_id){
+        return reclamationServices.getMyReclamations(user_id);
     }
 
 }

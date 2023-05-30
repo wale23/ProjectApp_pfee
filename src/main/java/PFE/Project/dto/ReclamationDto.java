@@ -19,7 +19,8 @@ public class ReclamationDto {
      String status;
      String priority;
      String departement;
-     UserDto user;
+     UserDto receiver;
+     UserDto sender;
      String date;
      boolean archived;
      List<String> images;

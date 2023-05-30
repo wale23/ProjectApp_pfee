@@ -5,17 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentDto {
-     String date;
-     Integer id;
-     UserDto user;
-     String comment;
-     ReclamationDto reclamation;
-
+public class NotificationDto {
+  Integer id;
+  String notification;
+  String date;
+  UserDto sender;
+  UserDto receiver;
+  String type;
 }

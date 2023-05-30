@@ -11,7 +11,8 @@ public class ReclamationConvertor {
     public static ReclamationDto reclamationToDto(Reclamation reclamation) {
         ReclamationDto reclamationDto = new ReclamationDto();
         reclamationDto.setId(reclamation.getId());
-        reclamationDto.setUser(UserConvertor.userToDto(reclamation.getUser()));
+        reclamationDto.setSender(UserConvertor.userToDto(reclamation.getSender()));
+        reclamationDto.setReceiver(UserConvertor.userToDto(reclamation.getReceiver()));
         reclamationDto.setDate(reclamation.getDate());
         reclamationDto.setDescription(reclamation.getDescription());
         reclamationDto.setImages(reclamation.getImages());
