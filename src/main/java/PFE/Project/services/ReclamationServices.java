@@ -125,7 +125,7 @@ public class ReclamationServices {
                 reclamation.getSender().getEmail(), reclamation.getSubject(), notifcation.getNotification()
         );
 
-        //send firebase notif
+
         return ResponseEntity.status(200).body("done");
     }
 

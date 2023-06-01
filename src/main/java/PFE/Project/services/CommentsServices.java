@@ -7,6 +7,7 @@ import PFE.Project.dto.CommentDto;
 import PFE.Project.dto_convertor.CommentDtoConvertor;
 import PFE.Project.dto_convertor.ReclamationConvertor;
 import PFE.Project.models.Comment;
+import PFE.Project.models.Notifcation;
 import PFE.Project.models.Reclamation;
 import PFE.Project.models.User;
 import PFE.Project.requests.CommentRequest;
@@ -23,9 +24,11 @@ import java.util.Optional;
 @AllArgsConstructor
 @Service
 public class CommentsServices {
+    NotificationServices notificationServices;
     CommentsRepository commentsRepository;
     ReclamationRepository reclamationRepository;
     UserRepository userRepository;
+    UserServices userServices;
 
     public ResponseEntity createComment(CommentRequest commentRequest) {
         Comment comment = new Comment();
@@ -37,6 +40,43 @@ public class CommentsServices {
         comment.setComment(commentRequest.getComment());
         comment.setUser(user.get());
         commentsRepository.save(comment);
+
+        User sender=reclamation.get().getSender();
+        User receiver=reclamation.get().getReceiver();
+
+
+        // manage notification
+
+
+        if(sender==user.get()){
+            Notifcation notifcation = new Notifcation();
+            notifcation.setDate(LocalDateTime.now().toString());
+            notifcation.setReceiver(reclamation.get().getReceiver());
+            notifcation.setSender(reclamation.get().getSender());
+            notifcation.setType("comment");
+            notifcation.setNotification(String.format("%s a ajouté un commentaire pour la  reclamation #%s", reclamation.get().getSender().getFull_name(), reclamation.get().getId()));
+            notifcation.setReclamation(reclamation.get());
+            notificationServices.createNotification(notifcation);
+
+            // send email to receiver
+            userServices.sendEmail(
+                    reclamation.get().getReceiver().getEmail(), reclamation.get().getSubject(), notifcation.getNotification()
+            );
+        }else{
+            Notifcation notifcation = new Notifcation();
+            notifcation.setDate(LocalDateTime.now().toString());
+            notifcation.setReceiver(reclamation.get().getSender());
+            notifcation.setSender(reclamation.get().getReceiver());
+            notifcation.setType("comment");
+            notifcation.setNotification(String.format("%s a ajouté un commentaire pour la  reclamation #%s", reclamation.get().getSender().getFull_name(), reclamation.get().getId()));
+            notifcation.setReclamation(reclamation.get());
+            notificationServices.createNotification(notifcation);
+
+            // send email to receiver
+            userServices.sendEmail(
+                    reclamation.get().getSender().getEmail(), reclamation.get().getSubject(), notifcation.getNotification()
+            );
+        }
         return ResponseEntity.status(200).body("done");
     }
 

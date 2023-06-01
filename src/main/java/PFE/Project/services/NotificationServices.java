@@ -8,15 +8,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class NotificationServices {
     final NotificationRepository notificationRepository;
+    final FcmService fcmService;
 
 
-    public NotificationServices(NotificationRepository notificationRepository) {
+    public NotificationServices(NotificationRepository notificationRepository, FcmService fcmService) {
         this.notificationRepository = notificationRepository;
+        this.fcmService = fcmService;
     }
 
     public List<NotificationDto> getMyNotificationsService(Integer user_id){
@@ -25,6 +26,7 @@ public class NotificationServices {
     }
 
     public void createNotification(Notifcation notifcation){
+        fcmService.sendNotification(notifcation.getReceiver().getToken(), "#" + notifcation.getReclamation().getId().toString(), notifcation.getNotification());
         notificationRepository.save(notifcation);
     }
 
