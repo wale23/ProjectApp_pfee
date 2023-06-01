@@ -1,8 +1,7 @@
 package PFE.Project.dto_convertor;
 
-import PFE.Project.dto.CommentDto;
 import PFE.Project.dto.NotificationDto;
-import PFE.Project.models.Comment;
+
 import PFE.Project.models.Notifcation;
 
 public class NotificationDtoConvertor {
@@ -13,6 +12,8 @@ public class NotificationDtoConvertor {
         notificationDto.setSender(UserConvertor.userToDto(notifcation.getSender()));
         notificationDto.setReceiver(UserConvertor.userToDto(notifcation.getReceiver()));
         notificationDto.setDate(notifcation.getDate());
+        notificationDto.setType(notifcation.getType());
+        notificationDto.setReclamationDto(ReclamationConvertor.reclamationToDto(notifcation.getReclamation()));
         return notificationDto;
     }
 }

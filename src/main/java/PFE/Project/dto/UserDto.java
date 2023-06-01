@@ -16,5 +16,6 @@ private String type;
 private String phone_number;
 private String email;
 private String company;
+private String token;
 private Long role_id;
 }

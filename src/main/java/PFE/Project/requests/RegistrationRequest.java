@@ -16,5 +16,6 @@ private final String type;
 private final String phone_number;
 private final String email;
 private final String password;
+private final String token;
 private final Long role_id;
 }

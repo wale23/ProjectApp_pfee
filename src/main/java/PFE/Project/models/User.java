@@ -22,6 +22,7 @@ public class User implements UserDetails {
     String full_name;
     String type;
     String phone_number;
+    String token;
     @JoinColumn(name = "role_id", nullable = false)
     @JsonManagedReference
     @ManyToOne()

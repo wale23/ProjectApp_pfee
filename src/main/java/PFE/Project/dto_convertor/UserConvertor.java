@@ -16,6 +16,7 @@ public class UserConvertor {
     userDto.setEmail(user.getEmail());
     userDto.setPhone_number(user.getPhone_number());
     userDto.setRole_id(user.getRole().getId());
+    userDto.setToken(user.getToken());
     return userDto;
   }
 

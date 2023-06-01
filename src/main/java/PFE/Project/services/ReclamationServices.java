@@ -4,15 +4,13 @@ import PFE.Project.data.ReclamationRepository;
 import PFE.Project.data.UserRepository;
 import PFE.Project.dto.ReclamationDto;
 import PFE.Project.dto_convertor.ReclamationConvertor;
-import PFE.Project.enumerate.Status;
+import PFE.Project.models.Notifcation;
 import PFE.Project.models.Reclamation;
 import PFE.Project.models.User;
 import PFE.Project.requests.ReclamationRequest;
-import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -21,10 +19,14 @@ import java.util.Optional;
 
 public class ReclamationServices {
     final UserRepository userRepository;
+    final UserServices userServices;
     final ReclamationRepository reclamationRepository;
+    final NotificationServices notificationServices;
 
-    public ReclamationServices(UserRepository userRepository, ReclamationRepository reclamationRepository) {
+    public ReclamationServices(UserRepository userRepository, ReclamationRepository reclamationRepository, NotificationServices notificationServices, UserServices userServices) {
         this.userRepository = userRepository;
+        this.userServices = userServices;
+        this.notificationServices = notificationServices;
         this.reclamationRepository = reclamationRepository;
     }
 
@@ -34,7 +36,6 @@ public class ReclamationServices {
 
         Reclamation reclamation = new Reclamation();
         reclamation.setDate(LocalDateTime.now().toString());
-
         reclamation.setDescription(reclamationRequest.getDescription());
         reclamation.setSubject(reclamationRequest.getSubject());
         reclamation.setReceiver(receiver.get());
@@ -46,7 +47,22 @@ public class ReclamationServices {
         reclamation.setImages(reclamationRequest.getImages());
         reclamationRepository.save(reclamation);
 
+        // manage notification
+        Notifcation notifcation = new Notifcation();
+        notifcation.setDate(LocalDateTime.now().toString());
+        notifcation.setReceiver(receiver.get());
+        notifcation.setSender(sender.get());
+        notifcation.setType("create");
+        notifcation.setNotification(String.format("Vous avez recu la reclamation #%s de la part de %s ", reclamation.getId(), sender.get().getFull_name()));
+        notifcation.setReclamation(reclamation);
+        notificationServices.createNotification(notifcation);
 
+        // send email to receiver
+        userServices.sendEmail(
+                receiver.get().getEmail(), reclamation.getSubject(), notifcation.getNotification()
+        );
+
+        //send firebase notif
         return ResponseEntity.status(200).body("done");
     }
 
@@ -89,8 +105,27 @@ public class ReclamationServices {
 
     public ResponseEntity changeStatus(int id, String status) {
         Reclamation reclamation = reclamationRepository.findById(id).orElse(null);
+        String oldStatus=reclamation.getStatus();
         reclamation.setStatus(status);
+
         reclamationRepository.save(reclamation);
+
+        // manage notification
+        Notifcation notifcation = new Notifcation();
+        notifcation.setDate(LocalDateTime.now().toString());
+        notifcation.setReceiver(reclamation.getSender());
+        notifcation.setSender(reclamation.getReceiver());
+        notifcation.setType("edit");
+        notifcation.setNotification(String.format("%s a change le statut de la  reclamation #%s de %s à %s", reclamation.getReceiver().getFull_name(), reclamation.getId(), oldStatus, status));
+        notifcation.setReclamation(reclamation);
+        notificationServices.createNotification(notifcation);
+
+        // send email to receiver
+        userServices.sendEmail(
+                reclamation.getSender().getEmail(), reclamation.getSubject(), notifcation.getNotification()
+        );
+
+        //send firebase notif
         return ResponseEntity.status(200).body("done");
     }
 

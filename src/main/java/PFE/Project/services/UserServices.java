@@ -57,7 +57,8 @@ public class UserServices implements UserDetailsService {
         if (checkUser.isPresent()) {
 
             if (Objects.equals(checkUser.get().getType(), request.getType())) {
-
+                checkUser.get().setToken(request.getToken());
+                userRepository.save( checkUser.get());
                 return ResponseEntity.status(200).body(UserConvertor.userToDto(checkUser.get()));
             }
 
@@ -81,6 +82,7 @@ public class UserServices implements UserDetailsService {
         user.setPhone_number(request.getPhone_number());
         user.setEmail(request.getEmail());
         user.setRole(role);
+        user.setToken(request.getToken());
         userRepository.save(user);
 
         return ResponseEntity.status(200).body(UserConvertor.userToDto(user));
@@ -151,6 +153,8 @@ public class UserServices implements UserDetailsService {
 
             if (user.get().getPassword() != null && Objects.equals(user.get().getType(), loginRequest.getType())) {
                 if (bCryptPasswordEncoder.matches(loginRequest.getPassword(), user.get().getPassword())) {
+                    user.get().setToken(loginRequest.getToken());
+                    userRepository.save(user.get());
                     return ResponseEntity.status(200).body(UserConvertor.userToDto(user.get()));
 
                 } else {
@@ -162,6 +166,8 @@ public class UserServices implements UserDetailsService {
                 }
 
             } else if (user.get().getPassword() == null && Objects.equals(user.get().getType(), loginRequest.getType())) {
+                user.get().setToken(loginRequest.getToken());
+                userRepository.save(user.get());
                 return ResponseEntity.status(200).body(UserConvertor.userToDto(user.get()));
             }
             Map<String, String> responseMap = new HashMap<>();

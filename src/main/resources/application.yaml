@@ -9,7 +9,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: "fathi3ayari333@gmail.com"
-    password: mcdgvyqhnzszyatv
+    password: naboiqibzaxkyrnw
     properties:
       mail:
         smtp:
@@ -29,5 +29,5 @@ spring:
       ddl-auto: update
 server:
   port: '8000'
-  address: 192.168.135.86
+  address: 192.168.102.86
 
