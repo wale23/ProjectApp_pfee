@@ -35,7 +35,7 @@ public class ReclamationServices {
         Optional<User> receiver = userRepository.findById(reclamationRequest.getReceiver());
 
         Reclamation reclamation = new Reclamation();
-        reclamation.setDate(LocalDateTime.now().toString());
+        reclamation.setDate(LocalDateTime.now());
         reclamation.setDescription(reclamationRequest.getDescription());
         reclamation.setSubject(reclamationRequest.getSubject());
         reclamation.setReceiver(receiver.get());
@@ -49,7 +49,7 @@ public class ReclamationServices {
 
         // manage notification
         Notifcation notifcation = new Notifcation();
-        notifcation.setDate(LocalDateTime.now().toString());
+        notifcation.setDate(LocalDateTime.now());
         notifcation.setReceiver(receiver.get());
         notifcation.setSender(sender.get());
         notifcation.setType("create");
@@ -112,7 +112,7 @@ public class ReclamationServices {
 
         // manage notification
         Notifcation notifcation = new Notifcation();
-        notifcation.setDate(LocalDateTime.now().toString());
+        notifcation.setDate(LocalDateTime.now());
         notifcation.setReceiver(reclamation.getSender());
         notifcation.setSender(reclamation.getReceiver());
         notifcation.setType("edit");

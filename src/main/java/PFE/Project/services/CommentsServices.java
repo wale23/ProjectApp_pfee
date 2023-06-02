@@ -36,7 +36,7 @@ public class CommentsServices {
         Optional<User> user = userRepository.findById(commentRequest.getUser_id());
         comment.setComment(commentRequest.getComment());
         comment.setReclamation(reclamation.get());
-        comment.setDate(LocalDateTime.now().toString());
+        comment.setDate(LocalDateTime.now());
         comment.setComment(commentRequest.getComment());
         comment.setUser(user.get());
         commentsRepository.save(comment);
@@ -50,7 +50,7 @@ public class CommentsServices {
 
         if(sender==user.get()){
             Notifcation notifcation = new Notifcation();
-            notifcation.setDate(LocalDateTime.now().toString());
+            notifcation.setDate(LocalDateTime.now());
             notifcation.setReceiver(reclamation.get().getReceiver());
             notifcation.setSender(reclamation.get().getSender());
             notifcation.setType("comment");
@@ -64,7 +64,7 @@ public class CommentsServices {
             );
         }else{
             Notifcation notifcation = new Notifcation();
-            notifcation.setDate(LocalDateTime.now().toString());
+            notifcation.setDate(LocalDateTime.now());
             notifcation.setReceiver(reclamation.get().getSender());
             notifcation.setSender(reclamation.get().getReceiver());
             notifcation.setType("comment");
@@ -81,7 +81,7 @@ public class CommentsServices {
     }
 
     public List<CommentDto> getComments(Integer reclamation_id) {
-        List<Comment> comments=commentsRepository.getCommentByReclamationId(reclamation_id);
+        List<Comment> comments=commentsRepository.getCommentByReclamationIdOrderByDateDesc(reclamation_id);
         return comments.stream().map(CommentDtoConvertor::commentDto).toList();
 
     }

@@ -5,6 +5,7 @@ import PFE.Project.data.ResetPasswordRequestRepository;
 import PFE.Project.data.RoleRepository;
 import PFE.Project.data.UserRepository;
 import PFE.Project.dto.UserDto;
+import PFE.Project.dto_convertor.ReclamationConvertor;
 import PFE.Project.dto_convertor.UserConvertor;
 import PFE.Project.enumerate.Results;
 import PFE.Project.models.ResetPasswordRequest;
@@ -188,6 +189,12 @@ public class UserServices implements UserDetailsService {
         message.setText(body);
         message.setSubject(subject);
         mailSender.send(message);
-        System.out.println("Mail Sent successfully...");
+    }
+
+    public List<UserDto> getAllUsers(Integer id) {
+        List<User> users=userRepository.findAll();
+        users.removeIf(user -> user.getId().equals(id));
+
+       return users.stream().map(UserConvertor::userToDto).toList();
     }
 }

@@ -3,6 +3,7 @@ package PFE.Project.controllers;
 
 import PFE.Project.data.ResetPasswordRequestRepository;
 
+import PFE.Project.dto.UserDto;
 import PFE.Project.requests.ChangePasswordRequest;
 import PFE.Project.requests.LoginRequest;
 import PFE.Project.requests.RegistrationRequest;
@@ -63,6 +64,10 @@ public class UserController {
     @GetMapping("/check-otp/{code}")
     public ResponseEntity CheckOtp(@PathVariable Long code) {
         return userServices.checkOtp(code);
+    }
+    @GetMapping("/users/{id}")
+    public List<UserDto> getUsers(@PathVariable Integer id) {
+        return userServices.getAllUsers(id);
     }
 
     @GetMapping("/reset-password/{email}")

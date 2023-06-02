@@ -22,7 +22,7 @@ public class Reclamation {
     String subject;
     String priority;
     String departement;
-    String date;
+    LocalDateTime date;
     boolean archive;
     String description;
     @Cascade(org.hibernate.annotations.CascadeType.DELETE)
@@ -35,9 +35,9 @@ public class Reclamation {
     @ManyToOne()
     User receiver;
     @JsonIgnore
-    @OneToMany(mappedBy = "reclamation")
+    @OneToMany(mappedBy = "reclamation", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Comment> comments;
-    @OneToMany(mappedBy = "reclamation")
+    @OneToMany(mappedBy = "reclamation", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Notifcation> notifcations;
 
 }

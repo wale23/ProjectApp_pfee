@@ -12,7 +12,6 @@ public class CommentDtoConvertor {
         CommentDto commentDto= new CommentDto();
         commentDto.setId(comment.getId());
         commentDto.setUser(UserConvertor.userToDto(comment.getUser()));
-        commentDto.setReclamation(ReclamationConvertor.reclamationToDto(comment.getReclamation()));
         commentDto.setDate(comment.getDate());
         commentDto.setComment(comment.getComment());
 

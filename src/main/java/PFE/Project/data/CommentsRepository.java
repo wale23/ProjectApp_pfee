@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface CommentsRepository extends JpaRepository<Comment,Integer> {
-    List<Comment> getCommentByReclamationId(Integer reclamationId);
+    List<Comment> getCommentByReclamationIdOrderByDateDesc(Integer reclamationId);
 }
