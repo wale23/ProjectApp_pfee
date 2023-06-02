@@ -8,6 +8,7 @@ import PFE.Project.models.Notifcation;
 import PFE.Project.models.Reclamation;
 import PFE.Project.models.User;
 import PFE.Project.requests.ReclamationRequest;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -16,19 +17,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-
+@AllArgsConstructor
 public class ReclamationServices {
     final UserRepository userRepository;
     final UserServices userServices;
     final ReclamationRepository reclamationRepository;
     final NotificationServices notificationServices;
 
-    public ReclamationServices(UserRepository userRepository, ReclamationRepository reclamationRepository, NotificationServices notificationServices, UserServices userServices) {
-        this.userRepository = userRepository;
-        this.userServices = userServices;
-        this.notificationServices = notificationServices;
-        this.reclamationRepository = reclamationRepository;
-    }
+
 
     public ResponseEntity createReclamation(ReclamationRequest reclamationRequest) {
         Optional<User> sender = userRepository.findById(reclamationRequest.getSender());
@@ -68,7 +64,7 @@ public class ReclamationServices {
 
     public List<ReclamationDto> getMyReclamationsWithStatus(Integer sender, String status) {
         List<Reclamation> list;
-        list = reclamationRepository.getReclamationBySenderIdAndStatus(sender, status);
+        list = reclamationRepository.getReclamationBySenderIdAndStatusOrderByDateDesc(sender, status);
         list.removeIf(Reclamation::isArchive);
 
 
@@ -78,7 +74,7 @@ public class ReclamationServices {
 
     public List<ReclamationDto> getAllReclamationsWithStatus(String status) {
         List<Reclamation> list;
-        list = reclamationRepository.getReclamationByStatus(status);
+        list = reclamationRepository.getReclamationByStatusOrderByDateDesc(status);
 
         list.removeIf(Reclamation::isArchive);
         return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
@@ -86,7 +82,15 @@ public class ReclamationServices {
 
     public List<ReclamationDto> getMyReclamations(Integer sender) {
 
-        List<Reclamation> list = reclamationRepository.getReclamationBySenderId(sender);
+        List<Reclamation> list = reclamationRepository.getReclamationBySenderIdOrderByDateDesc(sender);
+        list.removeIf(Reclamation::isArchive);
+        return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
+    }
+
+
+    public List<ReclamationDto> getMyReceivedReclamations(Integer sender) {
+
+        List<Reclamation> list = reclamationRepository.getReclamationByReceiverIdOrderByDateDesc(sender);
         list.removeIf(Reclamation::isArchive);
         return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
     }
@@ -145,7 +149,7 @@ public class ReclamationServices {
     }
 
     public List<ReclamationDto> getArchived(int user_id) {
-        List<Reclamation> list = reclamationRepository.getReclamationBySenderIdAndAndArchive(user_id, true);
+        List<Reclamation> list = reclamationRepository.getReclamationBySenderIdAndAndArchiveOrderByDateDesc(user_id, true);
         return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
 
     }
@@ -159,7 +163,7 @@ public class ReclamationServices {
     // My received reclamations
     public List<ReclamationDto> getMyRecievedReclamationsWithStatus(Integer receiver, String status) {
         List<Reclamation> list;
-        list = reclamationRepository.getReclamationByReceiverIdAndStatus(receiver, status);
+        list = reclamationRepository.getReclamationByReceiverIdAndStatusOrderByDateDesc(receiver, status);
         list.removeIf(Reclamation::isArchive);
 
 

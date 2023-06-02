@@ -69,7 +69,7 @@ public class ReclamationsController {
 
     @GetMapping("/reclamations/recu/{user_id}")
     public List<ReclamationDto> getMyReceivedReclamations(@PathVariable int  user_id){
-        return reclamationServices.getMyReclamations(user_id);
+        return reclamationServices.getMyReceivedReclamations(user_id);
     }
 
 }
