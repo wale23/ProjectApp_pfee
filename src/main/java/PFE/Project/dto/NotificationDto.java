@@ -18,5 +18,5 @@ public class NotificationDto {
   UserDto sender;
   UserDto receiver;
   String type;
-  ReclamationDto reclamationDto;
+  ReclamationDto reclamation;
 }

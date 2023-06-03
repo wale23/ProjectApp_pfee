@@ -155,7 +155,7 @@ public class ReclamationServices {
     }
 
     public List<ReclamationDto> getAll() {
-        List<Reclamation> list = reclamationRepository.findAll();
+        List<Reclamation> list = reclamationRepository.findAllByOrderByDateDesc();
         return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
 
     }

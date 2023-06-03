@@ -2,6 +2,7 @@ package PFE.Project.controllers;
 
 import PFE.Project.dto.NotificationDto;
 import PFE.Project.models.Notifcation;
+import PFE.Project.models.StringListRequest;
 import PFE.Project.services.NotificationServices;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +26,9 @@ public class NotificationController {
     return notificationServices.getMyNotificationsService(user_id);
     }
 
-    @GetMapping("/delete-notif/{id}")
-    public ResponseEntity deleteNotification(@PathVariable Integer id){
-        return notificationServices.deleteNotification(id);
+    @PostMapping("/delete-notif")
+    public ResponseEntity deleteNotification(@RequestBody StringListRequest request){
+        List<Integer> ids = request.getIds();
+        return notificationServices.deleteNotification(ids);
     }
 }

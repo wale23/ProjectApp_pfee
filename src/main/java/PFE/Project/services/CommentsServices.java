@@ -68,7 +68,7 @@ public class CommentsServices {
             notifcation.setReceiver(reclamation.get().getSender());
             notifcation.setSender(reclamation.get().getReceiver());
             notifcation.setType("comment");
-            notifcation.setNotification(String.format("%s a ajouté un commentaire pour la  reclamation #%s", reclamation.get().getSender().getFull_name(), reclamation.get().getId()));
+            notifcation.setNotification(String.format("%s a ajouté un commentaire pour la  reclamation #%s", reclamation.get().getReceiver().getFull_name(), reclamation.get().getId()));
             notifcation.setReclamation(reclamation.get());
             notificationServices.createNotification(notifcation);
 

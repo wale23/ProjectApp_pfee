@@ -13,7 +13,7 @@ public class NotificationDtoConvertor {
         notificationDto.setReceiver(UserConvertor.userToDto(notifcation.getReceiver()));
         notificationDto.setDate(notifcation.getDate());
         notificationDto.setType(notifcation.getType());
-        notificationDto.setReclamationDto(ReclamationConvertor.reclamationToDto(notifcation.getReclamation()));
+        notificationDto.setReclamation(ReclamationConvertor.reclamationToDto(notifcation.getReclamation()));
         return notificationDto;
     }
 }

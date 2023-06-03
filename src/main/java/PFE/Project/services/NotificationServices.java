@@ -4,6 +4,7 @@ import PFE.Project.data.NotificationRepository;
 import PFE.Project.dto.NotificationDto;
 import PFE.Project.dto_convertor.NotificationDtoConvertor;
 import PFE.Project.models.Notifcation;
+import PFE.Project.models.Reclamation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class NotificationServices {
     }
 
     public List<NotificationDto> getMyNotificationsService(Integer user_id){
-        return notificationRepository.getNotifcationByReceiverId(user_id).stream().map(NotificationDtoConvertor::notificationDto).toList();
+        return notificationRepository.getNotifcationByReceiverIdOrderByDateDesc(user_id).stream().map(NotificationDtoConvertor::notificationDto).toList();
 
     }
 
@@ -30,10 +31,13 @@ public class NotificationServices {
         notificationRepository.save(notifcation);
     }
 
-    public ResponseEntity deleteNotification(Integer notif_id){
-        Notifcation notifcation=notificationRepository.findById(notif_id).orElse(null);
-        notificationRepository.delete(notifcation);
+    public ResponseEntity deleteNotification(List<Integer> ids){
+        for (Integer index : ids) {
+            Notifcation notifcation=notificationRepository.findById(index).orElse(null);
+            notificationRepository.delete(notifcation);
+        }
         return ResponseEntity.status(200).body("done");
+
 
     }
 

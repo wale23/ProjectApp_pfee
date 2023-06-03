@@ -13,4 +13,5 @@ public interface ReclamationRepository extends JpaRepository<Reclamation,Integer
     List<Reclamation> getReclamationBySenderIdOrderByDateDesc(Integer userId);
     List<Reclamation> getReclamationByReceiverIdOrderByDateDesc(Integer userId);
     List<Reclamation> getReclamationBySenderIdAndAndArchiveOrderByDateDesc(Integer userId,boolean archive);
+    List<Reclamation> findAllByOrderByDateDesc();
 }

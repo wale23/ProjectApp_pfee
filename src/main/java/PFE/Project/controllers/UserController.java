@@ -47,7 +47,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity Register(@RequestBody RegistrationRequest registrationRequest) {
-
+        System.out.println(registrationRequest);
         return userServices.registerService(registrationRequest);
     }
 
