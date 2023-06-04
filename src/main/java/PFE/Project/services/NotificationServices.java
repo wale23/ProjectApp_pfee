@@ -8,6 +8,9 @@ import PFE.Project.models.Reclamation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -22,7 +25,9 @@ public class NotificationServices {
     }
 
     public List<NotificationDto> getMyNotificationsService(Integer user_id){
-        return notificationRepository.getNotifcationByReceiverIdOrderByDateDesc(user_id).stream().map(NotificationDtoConvertor::notificationDto).toList();
+        List<Notifcation> notif=notificationRepository.getNotifcationByReceiverId(user_id);
+        notif.sort(Comparator.comparing(this::parseDate).reversed());
+        return notif.stream().map(NotificationDtoConvertor::notificationDto).toList();
 
     }
 
@@ -41,5 +46,8 @@ public class NotificationServices {
 
     }
 
-
+    private LocalDateTime parseDate(Notifcation notifcation) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return LocalDateTime.parse(notifcation.getDate(), formatter);
+    }
 }

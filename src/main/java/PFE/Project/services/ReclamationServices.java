@@ -11,8 +11,10 @@ import PFE.Project.requests.ReclamationRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +33,7 @@ public class ReclamationServices {
         Optional<User> receiver = userRepository.findById(reclamationRequest.getReceiver());
 
         Reclamation reclamation = new Reclamation();
-        reclamation.setDate(LocalDateTime.now());
+        reclamation.setDate(LocalDateTime.now().toString());
         reclamation.setDescription(reclamationRequest.getDescription());
         reclamation.setSubject(reclamationRequest.getSubject());
         reclamation.setReceiver(receiver.get());
@@ -45,7 +47,7 @@ public class ReclamationServices {
 
         // manage notification
         Notifcation notifcation = new Notifcation();
-        notifcation.setDate(LocalDateTime.now());
+        notifcation.setDate(LocalDateTime.now().toString());
         notifcation.setReceiver(receiver.get());
         notifcation.setSender(sender.get());
         notifcation.setType("create");
@@ -64,7 +66,9 @@ public class ReclamationServices {
 
     public List<ReclamationDto> getMyReclamationsWithStatus(Integer sender, String status) {
         List<Reclamation> list;
-        list = reclamationRepository.getReclamationBySenderIdAndStatusOrderByDateDesc(sender, status);
+        list = reclamationRepository.getReclamationBySenderIdAndStatus(sender, status);
+        list.sort(Comparator.comparing(this::parseDate).reversed());
+
         list.removeIf(Reclamation::isArchive);
 
 
@@ -74,15 +78,16 @@ public class ReclamationServices {
 
     public List<ReclamationDto> getAllReclamationsWithStatus(String status) {
         List<Reclamation> list;
-        list = reclamationRepository.getReclamationByStatusOrderByDateDesc(status);
-
+        list = reclamationRepository.getReclamationByStatus(status);
+        list.sort(Comparator.comparing(this::parseDate).reversed());
         list.removeIf(Reclamation::isArchive);
         return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
     }
 
     public List<ReclamationDto> getMyReclamations(Integer sender) {
 
-        List<Reclamation> list = reclamationRepository.getReclamationBySenderIdOrderByDateDesc(sender);
+        List<Reclamation> list = reclamationRepository.getReclamationBySenderId(sender);
+        list.sort(Comparator.comparing(this::parseDate).reversed());
         list.removeIf(Reclamation::isArchive);
         return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
     }
@@ -90,7 +95,8 @@ public class ReclamationServices {
 
     public List<ReclamationDto> getMyReceivedReclamations(Integer sender) {
 
-        List<Reclamation> list = reclamationRepository.getReclamationByReceiverIdOrderByDateDesc(sender);
+        List<Reclamation> list = reclamationRepository.getReclamationByReceiverId(sender);
+        list.sort(Comparator.comparing(this::parseDate).reversed());
         list.removeIf(Reclamation::isArchive);
         return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
     }
@@ -116,7 +122,7 @@ public class ReclamationServices {
 
         // manage notification
         Notifcation notifcation = new Notifcation();
-        notifcation.setDate(LocalDateTime.now());
+        notifcation.setDate(LocalDateTime.now().toString());
         notifcation.setReceiver(reclamation.getSender());
         notifcation.setSender(reclamation.getReceiver());
         notifcation.setType("edit");
@@ -149,7 +155,8 @@ public class ReclamationServices {
     }
 
     public List<ReclamationDto> getArchived(int user_id) {
-        List<Reclamation> list = reclamationRepository.getReclamationBySenderIdAndAndArchiveOrderByDateDesc(user_id, true);
+        List<Reclamation> list = reclamationRepository.getReclamationBySenderIdAndAndArchive(user_id, true);
+        list.sort(Comparator.comparing(this::parseDate).reversed());
         return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
 
     }
@@ -163,10 +170,15 @@ public class ReclamationServices {
     // My received reclamations
     public List<ReclamationDto> getMyRecievedReclamationsWithStatus(Integer receiver, String status) {
         List<Reclamation> list;
-        list = reclamationRepository.getReclamationByReceiverIdAndStatusOrderByDateDesc(receiver, status);
+        list = reclamationRepository.getReclamationByReceiverIdAndStatus(receiver, status);
+        list.sort(Comparator.comparing(this::parseDate).reversed());
         list.removeIf(Reclamation::isArchive);
 
 
         return list.stream().map(ReclamationConvertor::reclamationToDto).toList();
+    }
+    private LocalDateTime parseDate(Reclamation reclamation) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return LocalDateTime.parse(reclamation.getDate(), formatter);
     }
 }

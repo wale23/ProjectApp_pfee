@@ -22,7 +22,7 @@ public class Reclamation {
     String subject;
     String priority;
     String departement;
-    LocalDateTime date;
+    String date;
     boolean archive;
     String description;
     @Cascade(org.hibernate.annotations.CascadeType.DELETE)

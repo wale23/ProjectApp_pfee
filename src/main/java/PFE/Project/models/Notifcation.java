@@ -11,7 +11,7 @@ public class Notifcation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
-    LocalDateTime date;
+    String date;
     String notification;
     String type;
     @ManyToOne()

@@ -21,7 +21,7 @@ public class ReclamationDto {
      String departement;
      UserDto receiver;
      UserDto sender;
-     LocalDateTime date;
+     String date;
      boolean archived;
      List<String> images;
 

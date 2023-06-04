@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +38,7 @@ public class CommentsServices {
         Optional<User> user = userRepository.findById(commentRequest.getUser_id());
         comment.setComment(commentRequest.getComment());
         comment.setReclamation(reclamation.get());
-        comment.setDate(LocalDateTime.now());
+        comment.setDate(LocalDateTime.now().toString());
         comment.setComment(commentRequest.getComment());
         comment.setUser(user.get());
         commentsRepository.save(comment);
@@ -50,7 +52,7 @@ public class CommentsServices {
 
         if(sender==user.get()){
             Notifcation notifcation = new Notifcation();
-            notifcation.setDate(LocalDateTime.now());
+            notifcation.setDate(LocalDateTime.now().toString());
             notifcation.setReceiver(reclamation.get().getReceiver());
             notifcation.setSender(reclamation.get().getSender());
             notifcation.setType("comment");
@@ -64,7 +66,7 @@ public class CommentsServices {
             );
         }else{
             Notifcation notifcation = new Notifcation();
-            notifcation.setDate(LocalDateTime.now());
+            notifcation.setDate(LocalDateTime.now().toString());
             notifcation.setReceiver(reclamation.get().getSender());
             notifcation.setSender(reclamation.get().getReceiver());
             notifcation.setType("comment");
@@ -81,8 +83,14 @@ public class CommentsServices {
     }
 
     public List<CommentDto> getComments(Integer reclamation_id) {
-        List<Comment> comments=commentsRepository.getCommentByReclamationIdOrderByDateDesc(reclamation_id);
+        List<Comment> comments=commentsRepository.getCommentByReclamationId(reclamation_id);
+        comments.sort(Comparator.comparing(this::parseDate).reversed());
+
         return comments.stream().map(CommentDtoConvertor::commentDto).toList();
 
+    }
+    private LocalDateTime parseDate(Comment comment) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return LocalDateTime.parse(comment.getDate(), formatter);
     }
 }
